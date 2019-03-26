@@ -14,11 +14,11 @@
           </div>
           <div class="form-group">
             <label>Description</label>
-            <textarea class="form-control" 
-                      placeholder="Description" 
-                      style="min-height: 250px;" 
-                      v-model="question.description">
-            </textarea>
+            <ckeditor class="form-control" 
+              :editor="editor" 
+              :config="editorConfig" 
+              v-model="question.description">
+            </ckeditor>
           </div>
           <button v-if="!isLoading" 
                   type="submit" 
@@ -36,17 +36,37 @@
 
 <script>
 // @ is an alias to /src
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default {
   name: 'QuestionForm',
   data() {
     return {
+      editor: ClassicEditor,
+      editorConfig: {
+        toolbar: [ 
+          'heading', 
+          '|', 
+          'bold', 
+          'italic', 
+          'link', 
+          'bulletedList', 
+          'numberedList', 
+          'blockQuote', 
+        ],
+        placeholder: 'Description',
+      },
       question: {
         title: '',
         description: '',
       },
       isLoading: false,
       errorMsg: null,
+    }
+  },
+  beforeMount() {
+    if(this.$route.params.id && this.isEdit) {
+      this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
     }
   },
   mounted() {
@@ -82,7 +102,12 @@ export default {
                        'Your question will be answered by other users soon.', 
                        'success');
           }
-          this.$router.push(`/questions`);
+          this.$store.dispatch('getQuestions');
+          if(this.isEdit) {
+            this.$router.push(`/questions/${data._id}`);
+          } else {
+            this.$router.push('/questions/mylist');
+          }
         })
         .catch(err => {
           const errors = err.response.data.errors;
@@ -97,5 +122,6 @@ export default {
         })
     }
   },
+  props: ['isEdit'],
 };
 </script>

@@ -13,11 +13,14 @@ export default {
   components: {
     Navbar,
   },
+  beforeCreate() {
+    this.$store.dispatch('getQuestions');
+    this.$store.dispatch('getMyAnswers');
+  },
   mounted() {
     if(localStorage.access_token) {
       this.$store.dispatch('login', localStorage.name);
     }
-    this.$store.dispatch('getQuestions');
   },
 };
 </script>

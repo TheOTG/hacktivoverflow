@@ -24,8 +24,5 @@ export default {
   components: {
     Question,
   },
-  mounted() {
-    this.$store.dispatch('getQuestions');
-  },
 };
 </script>

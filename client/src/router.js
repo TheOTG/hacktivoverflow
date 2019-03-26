@@ -57,7 +57,19 @@ export default new Router({
     {
       path: '/myanswers',
       name: 'my-answers',
-      component: () => import(/* webpackChunkName: "myanswers" */ './views/MyAnswers.vue'),
+      component: () => import(/* webpackChunkName: "home" */ './views/Home.vue'),
+      children: [
+        {
+          path: '/myanswers',
+          name: 'my-answer-list',
+          component: () => import(/* webpackChunkName: "home" */ './views/MyAnswers.vue'),
+        },
+        {
+          path: ':id/edit',
+          name: 'edit-answer',
+          component: () => import(/* webpackChunkName: "editanswer" */ './views/EditAnswer.vue'),
+        },
+      ],
     },
   ],
 });

@@ -1,15 +1,24 @@
 import Vue from 'vue';
 import VueSwal from 'vue-swal';
+import CKEditor from '@ckeditor/ckeditor5-vue';
 import App from './App.vue';
 import axios from 'axios';
 import router from './router';
 import store from './store';
+
+Vue.use(CKEditor);
 
 Vue.use(VueSwal);
 
 axios.defaults.baseURL = 'http://localhost:3000';
 
 Vue.prototype.$axios = axios;
+
+Vue.prototype.$sortByAccepted = function(question) {
+  question.answers.sort((a, b) => {
+    return b.isAccepted - a.isAccepted;
+  });
+}
 
 Vue.config.productionTip = false;
 

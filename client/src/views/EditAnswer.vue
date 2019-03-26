@@ -1,5 +1,11 @@
 <template>
-  <AnswerForm ref="answerForm" />
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-6">
+        <AnswerForm :is-edit="true" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -7,24 +13,13 @@
 import AnswerForm from '@/components/AnswerForm.vue';
 
 export default {
-  name: 'NewQuestion',
+  name: 'EditAnswer',
   components: {
     AnswerForm
-  },
-  data() {
-    return {
-      answer: {
-        title: '',
-        description: '',
-      },
-    };
   },
   mounted() {
     if(!this.$store.state.isLogin) {
       this.$router.push('/login');
-    } else {
-      this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
-      this.$refs.questionForm.question = this.question;
     }
   },
 };

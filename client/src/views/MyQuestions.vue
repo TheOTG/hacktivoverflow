@@ -10,7 +10,8 @@
       </div>
     </div>
     <Question v-for="(question, index) in $store.state.myQuestions" 
-              :key="index" :question="question" 
+              :key="index" 
+              :question="question" 
               :is-user="isUser" />
   </div>
 </template>

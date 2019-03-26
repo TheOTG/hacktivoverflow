@@ -1,6 +1,7 @@
 const Question = require('../models/question');
 const Answer = require('../models/answer');
 const User = require('../models/user');
+const mongoose = require('mongoose');
 
 class QuestionController {
   static list(req, res) {
@@ -28,15 +29,34 @@ class QuestionController {
   static post(req, res) {
     req.body.user = req.user;
     Question
-      .create({
-        ...req.body,
+      .findOneAndUpdate({
+        _id: mongoose.Types.ObjectId(),
+      } , {
+        ...req.body
+      }, {
+        new: true,
+        upsert: true,
+        runValidators: true,
+        setDefaultsOnInsert: true,
       })
-      .then(question => {
-        res.status(201).json(question);
-      })
-      .catch(err => {
-        res.status(500).json(err);
+      .populate('answers user')
+      .exec((err, doc) => {
+        if(err) {
+          res.status(500).json(err);
+        } else {
+          User.populate(doc, {
+            path: 'answers.user',
+            Model: Answer,
+          }, (err, doc) => {
+            if(err) {
+              res.status(500).json(err);
+            } else {
+              res.status(201).json(doc);
+            }
+          });
+        }
       });
+      
   }
 
   static myList(req, res) {
@@ -64,11 +84,22 @@ class QuestionController {
         runValidators: true,
         new: true,
       })
-      .then(question => {
-        res.status(200).json(question);
-      })
-      .catch(err => {
-        res.status(500).json(err);
+      .populate('answers user')
+      .exec((err, docs) => {
+        if(err) {
+          res.status(500).json(err);
+        } else {
+          User.populate(docs, {
+            path: 'answers.user',
+            Model: Answer,
+          }, (err, docs) => {
+            if(err) {
+              res.status(500).json(err);
+            } else {
+              res.status(200).json(docs);
+            }
+          });
+        }
       });
   }
 
@@ -83,13 +114,23 @@ class QuestionController {
       }, {
         new: true,
       })
-      .populate('answers answers.user')
-      .then(question => {
-        res.status(200).json(question);
-      })
-      .catch(err => {
-        res.status(500).json(err);
-      })
+      .populate('answers user')
+      .exec((err, docs) => {
+        if(err) {
+          res.status(500).json(err);
+        } else {
+          User.populate(docs, {
+            path: 'answers.user',
+            Model: Answer,
+          }, (err, docs) => {
+            if(err) {
+              res.status(500).json(err);
+            } else {
+              res.status(200).json(docs);
+            }
+          });
+        }
+      });
   }
 
   static upvote(req, res) {

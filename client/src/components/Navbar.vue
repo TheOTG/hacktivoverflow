@@ -16,7 +16,10 @@
         Home
       </router-link>
       <router-link class="hov noDecor rounded nav-link" to="/questions/mylist">
-        My Questions
+        myQuestions
+      </router-link>
+      <router-link class="hov noDecor rounded nav-link" to="/myanswers">
+        myAnswers
       </router-link>
       <form @submit.prevent="searchQuestion" 
             class="ml-3 mr-3" 

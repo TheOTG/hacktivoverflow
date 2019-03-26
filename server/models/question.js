@@ -23,6 +23,10 @@ let questionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Answers',
   }],
+  isAnswered: {
+    type: Boolean,
+    
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users',

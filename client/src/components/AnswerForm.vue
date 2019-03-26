@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="newAnswer" class="mb-5">
+  <form @submit.prevent="isEdit ? editAnswer() : newAnswer()" class="mb-5">
     <div style="font-size: 24px;">Your Answer</div>
     <div class="form-group">
       <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
@@ -11,11 +11,11 @@
     </div>
     <div class="form-group">
       <label>Description</label>
-      <textarea class="form-control" 
-                placeholder="Description" 
-                style="min-height: 250px;" 
+      <ckeditor class="form-control" 
+                :editor="editor" 
+                :config="editorConfig" 
                 v-model="answer.description">
-      </textarea>
+      </ckeditor>
     </div>
     <button v-if="!isLoading" 
             type="submit" 
@@ -29,17 +29,37 @@
 
 <script>
 // @ is an alias to /src
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default {
   name: 'AnswerForm',
   data() {
     return {
+      editor: ClassicEditor,
+      editorConfig: {
+        toolbar: [ 
+          'heading', 
+          '|', 
+          'bold', 
+          'italic', 
+          'link', 
+          'bulletedList', 
+          'numberedList', 
+          'blockQuote', 
+        ],
+        placeholder: 'Description',
+      },
       answer: {
         title: '',
         description: '',
       },
       isLoading: false,
       errorMsg: null,
+    }
+  },
+  beforeMount() {
+    if(this.$route.params.id && this.isEdit) {
+      this.answer = this.$store.getters.getAnswerById(this.$route.params.id)[0];
     }
   },
   mounted() {
@@ -49,54 +69,82 @@ export default {
   },
   methods: {
     newAnswer() {
-      this.isLoading = true;
-      let edit = '';
-      this.$axios
-        .post(`/answer`, {
-          title: this.answer.title,
-          description: this.answer.description,
-          question: this.$route.params.id,
-        }, {
-          headers: {
-            access_token: localStorage.access_token,
-          }
-        })
-        .then(({ data }) => {
-          return this.$axios
-            .put(`/question/${this.$route.params.id}/addAnswer`, {
-              answer: data._id,
-            }, {
-              headers: {
-                access_token: localStorage.access_token,
-              }
-            })
-        })
-        .then(({ data }) => {
-          if(edit) {
-            this.$swal('Question successfully edited!', 
-                       '', 
-                       'success');
-          } else {
+      if(this.$store.state.isLogin) {
+        this.isLoading = true;
+        this.$axios
+          .post(`/answer`, {
+            title: this.answer.title,
+            description: this.answer.description,
+            question: this.$route.params.id,
+          }, {
+            headers: {
+              access_token: localStorage.access_token,
+            }
+          })
+          .then(({ data }) => {
+            return this.$axios
+              .put(`/question/${this.$route.params.id}/addAnswer`, {
+                answer: data._id,
+              }, {
+                headers: {
+                  access_token: localStorage.access_token,
+                }
+              })
+          })
+          .then(({ data }) => {
             this.$swal('Thank you for answering!', 
-                       'Hopefully it will help the asker fix the problem.', 
+                       'Hopefully it will help fix the problem.', 
                        'success');
-          }
-          this.answer.title = '';
-          this.answer.description = '';
-          this.$emit('refreshQuestion', data);
-        })
-        .catch(err => {
-          const errors = err.response.data.errors;
-          this.errorMsg = [];
-          for(let key in errors) {
-            this.errorMsg.push(errors[key].message);
-          }
-          this.errorMsg = this.errorMsg.join('\n');
-        })
-        .finally(() => {
-          this.isLoading = false;
-        });
-    }
+            this.answer.title = '';
+            this.answer.description = '';
+            this.$emit('refreshQuestion', data);
+          })
+          .catch(err => {
+            const errors = err.response.data.errors;
+            this.errorMsg = [];
+            for(let key in errors) {
+              this.errorMsg.push(errors[key].message);
+            }
+            this.errorMsg = this.errorMsg.join('\n');
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      } else {
+        this.$router.push('/login');
+      }
+    },
+    editAnswer() {
+      if(this.$store.state.isLogin) {
+        this.isLoading = true;
+        this.$axios
+          .put(`/answer/${this.$route.params.id}`, {
+            title: this.title,
+            description: this.description,
+          }, {
+            headers: {
+              access_token: localStorage.access_token,
+            },
+          })
+          .then(({ data }) => {
+            this.$swal('Answer successfully edited!', 
+                       'Your answer should be more informative now.', 
+                       'success');
+            this.answer.title = '';
+            this.answer.description = '';
+            this.$router.go(-1);
+          })
+          .catch(err => {
+            console.log(err);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      } else {
+        this.$router.push('/login');
+      }
+    },
   },
+  props: ['isEdit'],
 };
 </script>

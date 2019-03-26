@@ -5,16 +5,20 @@
         <div class="d-flex flex-column border-top">
           <div class="d-flex flex-row">
             <div class="d-flex flex-column align-items-center mt-2 ml-4 mr-2" 
+                 :style="`color: ${(question.upvotes.length - question.downvotes.length) === 0 ? 
+                         '' : (question.upvotes.length - question.downvotes.length) > 0 ?
+                         '#5cb85c' : '#dc3545'};`" 
                  v-if="question.upvotes && question.downvotes">
               {{ question.upvotes.length - question.downvotes.length }}
-              <small class="text-muted">
+              <small>
                 votes
               </small>
             </div>
             <div class="d-flex flex-column align-items-center mt-2 ml-2 mr-2" 
+                 :style="`color: ${question.isAnswered ? '#5cb85c' : ''};`"
                  v-if="question.answers">
               {{ question.answers.length }}
-              <small class="text-muted">
+              <small>
                 answers
               </small>
             </div>

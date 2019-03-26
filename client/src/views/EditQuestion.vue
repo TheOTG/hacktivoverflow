@@ -1,5 +1,5 @@
 <template>
-  <QuestionForm ref="questionForm" />
+  <QuestionForm :is-edit="true" />
 </template>
 
 <script>
@@ -22,9 +22,6 @@ export default {
   mounted() {
     if(!this.$store.state.isLogin) {
       this.$router.push('/login');
-    } else {
-      this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
-      this.$refs.questionForm.question = this.question;
     }
   },
 };

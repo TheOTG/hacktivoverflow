@@ -7,9 +7,11 @@
             <div class="" style="width: 70%; font-weight: 400; font-size: 24px;">
               {{ question.title }}
             </div>
+            <!-- NEW QUESTION -->
             <router-link class="mt-auto mb-2" to="/questions/new">
               <button class="btn btn-primary">Ask Question</button>
             </router-link>
+            <!------------------>
           </div>
           <small class="text-muted mt-auto" 
                  v-if="question.user">
@@ -24,16 +26,16 @@
               </a>
             </div>
           </small>
-          
         </div>
       </div>
+      <!--------------------- VOTES --------------------->
       <div class="row justify-content-center">
         <div class="col-7 p-0">
           <div class="d-flex">
             <div class="d-flex-column">
-              <div class="">
+              <div class="" v-if="question.upvotes">
                 <i class="fas fa-caret-up fa-3x" 
-                   style="cursor: pointer;" 
+                   :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`" 
                    @click.prevent="vote(question._id, 'upvote')">
                 </i>
               </div>
@@ -41,19 +43,20 @@
                   v-if="question.upvotes && question.downvotes">
                 {{ question.upvotes.length - question.downvotes.length }}
               </div>
-              <div class="">
+              <div class="" v-if="question.downvotes">
                 <i class="fas fa-caret-down fa-3x" 
-                   style="cursor: pointer;" 
+                   :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`"  
                    @click.prevent="vote(question._id, 'downvote')">
                 </i>
               </div>
             </div>
-            <div class="m-3" style="white-space: pre-wrap;">{{ question.description }}</div>
+            <div class="m-3" v-html="question.description"></div>
           </div>
         </div>
       </div>
+      <!------------------------------------------------>
       <div class="row justify-content-center">
-        <div class="col-7 p-0 mt-3 border-bottom">
+        <div class="col-7 p-0 mt-5 border-bottom border-dark">
           <div class=""
                style="width: 70%; font-weight: 400; font-size: 22px;" 
                v-if="question.answers">
@@ -61,21 +64,27 @@
           </div>
         </div>
       </div>
+      <!--------- ANSWER COMPONENT ---------->
       <div v-if="question.answers">
         <div v-if="question.answers.length">
           <div class="row justify-content-center" 
                v-for="(answer, index) in question.answers" :key="index">
-            <div class="col-7 p-0">
-              <Answer @refreshQuestion="question = $event" :answer="answer" />
+            <div class="col-7 border-bottom border-dark p-0">
+              <Answer @refreshQuestion="refreshQuestion($event)" 
+                      :answer="answer" 
+                      :question-owner="question.user" />
             </div>
           </div>
         </div>
       </div>
+      <!------------------------------------->
+      <!------------ ANSWER FORM ------------>
       <div class="row justify-content-center">
         <div class="col-7">
-          <AnswerForm @refreshQuestion="question = $event" />
+          <AnswerForm @refreshQuestion="refreshQuestion($event)" />
         </div>
       </div>
+      <!------------------------------------->
     </div>
   </div>
 </template>
@@ -100,39 +109,39 @@ export default {
   },
   mounted() {
     this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
+    this.refreshQuestion(this.question);
   },
   methods: {
-    refreshQuestion() {
-      this.$store.dispatch('getQuestions');
-    },
     vote(id, type) {
       let path = null;
       let hasVoted = false;
-      if(this.hasUpVoted(localStorage.userId)) {
-        path = 'cancelUpvote'
-      } else if(this.hasDownVoted(localStorage.userId)) {
-        path = 'cancelDownvote'
+      if(this.hasUpVoted()) {
+        path = 'cancelUpvote';
+      } else if(this.hasDownVoted()) {
+        path = 'cancelDownvote';
       }
       if(path) {
         this.$axios
-          .put(`question/${id}/${path}`, {}, {
+          .put(`/question/${id}/${path}`, {}, {
             headers: {
               access_token: localStorage.access_token,
             },
           })
           .then(({ data }) => {
-            this.question = data;
             if(path.search(new RegExp(type, 'i')) === -1) {
               if(type === 'upvote') {
                 this.upvote(id);
               } else {
                 this.downvote(id);
               }
+            } else {
+              this.question = data;
+              this.refreshQuestion(this.question);
             }
           })
           .catch(err => {
             console.log(err);
-          })
+          });
       } else {
         eval(`this.${type}(id)`);
       }
@@ -146,6 +155,7 @@ export default {
         })
         .then(({ data }) => {
           this.question = data;
+          this.refreshQuestion(this.question);
         })
         .catch(err => {
           console.log(err);
@@ -160,20 +170,21 @@ export default {
         })
         .then(({ data }) => {
           this.question = data;
+          this.refreshQuestion(this.question);
         })
         .catch(err => {
           console.log(err);
         });
     },
-    hasUpVoted(id) {
-      if(this.question.upvotes.indexOf(id) > -1) {
+    hasUpVoted() {
+      if(this.question.upvotes.indexOf(localStorage.userId) > -1) {
         return true;
       } else {
         return false;
       }
     },
-    hasDownVoted(id) {
-      if(this.question.downvotes.indexOf(id) > -1) {
+    hasDownVoted() {
+      if(this.question.downvotes.indexOf(localStorage.userId) > -1) {
         return true;
       } else {
         return false;
@@ -197,11 +208,16 @@ export default {
         })
         .then(() => {
           this.$store.dispatch('getMyQuestions');
+          this.$router.push('/')
         })
         .catch(err => {
           console.log(err);
         });
     },
+    refreshQuestion(question) {
+      this.question = question;
+      this.$sortByAccepted(this.question);
+    }
   },
 };
 </script>

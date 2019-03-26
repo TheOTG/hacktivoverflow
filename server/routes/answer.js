@@ -6,7 +6,7 @@ const authorize = require('../middlewares/authorizeAnswer');
 const authorizeAcceptedAnswer = require('../middlewares/authorizeAcceptedAnswer');
 const hasVotedAnswer = require('../middlewares/hasVotedAnswer');
 
-router.get('/:questionId', Answer.list);
+router.get('/', Answer.list);
 
 router.use(authenticate);
 

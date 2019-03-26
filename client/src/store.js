@@ -10,6 +10,7 @@ export default new Vuex.Store({
   state: {
     questions: [],    // stores all questions
     myQuestions: [],  // stores currently logged in user questions
+    myAnswers: [],    // stores currently logged in user answers
     searchResult: [], // stores all questions that match the search
     isLogin: false,
     user: null,
@@ -24,7 +25,12 @@ export default new Vuex.Store({
       return state.questions.filter(question => {
         return question._id.toString() === id;
       });
-    }
+    },
+    getAnswerById: state => id => {
+      return state.myAnswers.filter(answer => {
+        return answer._id.toString() === id;
+      });
+    },
   },
   mutations: {
     SET_QUESTION(state, questions) {
@@ -32,6 +38,9 @@ export default new Vuex.Store({
     },
     SET_MY_QUESTION(state, questions) {
       state.myQuestions = questions;
+    },
+    SET_MY_ANSWER(state, answers) {
+      state.myAnswers = answers;
     },
     SET_IS_LOGIN(state, user) {
       state.isLogin = !state.isLogin;
@@ -58,6 +67,20 @@ export default new Vuex.Store({
         })
         .then(({ data }) => {
           commit('SET_MY_QUESTION', data);
+        })
+        .catch(err => {
+          console.log(err);
+        })
+    },
+    getMyAnswers({ commit }) {
+      axios
+        .get('/answer/mylist', {
+          headers: {
+            access_token: localStorage.access_token,
+          },
+        })
+        .then(({ data }) => {
+          commit('SET_MY_ANSWER', data);
         })
         .catch(err => {
           console.log(err);

@@ -5,9 +5,7 @@ const User = require('../models/user');
 class AnswerController {
   static list(req, res) {
     Answer
-      .find({
-        question: req.params.questionId
-      })
+      .find({})
       .populate('user question')
       .then(answers => {
         res.status(200).json(answers);
@@ -37,7 +35,7 @@ class AnswerController {
       .find({
         user,
       })
-      .populate('user question')
+      .populate('user question question.user')
       .then(answers => {
         res.status(200).json(answers);
       })
@@ -56,6 +54,7 @@ class AnswerController {
         runValidators: true,
         new: true,
       })
+      .populate('user question')
       .then(answer => {
         res.status(200).json(answer);
       })
@@ -94,11 +93,20 @@ class AnswerController {
                 if(err) {
                   res.status(500).json(err);
                 } else {
-                  res.status(200).json(doc.question);
+                  User.populate(doc , {
+                    path: 'question.user',
+                    model: User,
+                  }, (err, doc) => {
+                    if(err) {
+                      res.status(500).json(err);
+                    } else {
+                      res.status(200).json(doc.question);
+                    }
+                  });
                 }
-              })
+              });
             }
-          })
+          });
         }
       });
   }
@@ -133,11 +141,20 @@ class AnswerController {
                 if(err) {
                   res.status(500).json(err);
                 } else {
-                  res.status(200).json(doc.question);
+                  User.populate(doc , {
+                    path: 'question.user',
+                    model: User,
+                  }, (err, doc) => {
+                    if(err) {
+                      res.status(500).json(err);
+                    } else {
+                      res.status(200).json(doc.question);
+                    }
+                  });
                 }
-              })
+              });
             }
-          })
+          });
         }
       });
   }
@@ -172,11 +189,20 @@ class AnswerController {
                 if(err) {
                   res.status(500).json(err);
                 } else {
-                  res.status(200).json(doc.question);
+                  User.populate(doc , {
+                    path: 'question.user',
+                    model: User,
+                  }, (err, doc) => {
+                    if(err) {
+                      res.status(500).json(err);
+                    } else {
+                      res.status(200).json(doc.question);
+                    }
+                  });
                 }
-              })
+              });
             }
-          })
+          });
         }
       });
   }
@@ -211,11 +237,20 @@ class AnswerController {
                 if(err) {
                   res.status(500).json(err);
                 } else {
-                  res.status(200).json(doc.question);
+                  User.populate(doc , {
+                    path: 'question.user',
+                    model: User,
+                  }, (err, doc) => {
+                    if(err) {
+                      res.status(500).json(err);
+                    } else {
+                      res.status(200).json(doc.question);
+                    }
+                  });
                 }
-              })
+              });
             }
-          })
+          });
         }
       });
   }
