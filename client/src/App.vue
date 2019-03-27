@@ -15,15 +15,11 @@ export default {
     Navbar,
   },
   beforeCreate() {
-    this.$store.dispatch('getQuestions');
-    if(this.$store.state.isLogin) {
-      this.$store.dispatch('getMyAnswers');
-    }
-  },
-  mounted() {
     if(localStorage.access_token) {
       this.$store.dispatch('login', localStorage.name);
+      this.$store.dispatch('getMyAnswers');
     }
+    this.$store.dispatch('getQuestions');
   },
 };
 </script>

@@ -58,8 +58,9 @@ export default {
             `Welcome back, ${name}!`,
             'success');
           this.$store.dispatch('login', name);
+          this.$store.dispatch('getMyAnswers');
           this.errorMsg = null;
-          this.$router.push('/');
+          this.$router.push('/questions/mylist');
         })
         .catch((err) => {
           this.errorMsg = err.response.data.message;

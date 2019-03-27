@@ -8,17 +8,24 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    questions: [], // stores all questions
-    myQuestions: [], // stores currently logged in user questions
-    myAnswers: [], // stores currently logged in user answers
-    searchResult: [], // stores all questions that match the search
+    questions: [],
+    myQuestions: [],
+    myAnswers: [],
+    searchResult: [],
+    taggedQuestions: [],
     isLogin: false,
     user: null,
+    isTitleSearch: true,
   },
   getters: {
     searchQuestion: state => search => {
       return state.questions.filter(question => {
         return question.title.search(new RegExp(search, 'i')) > -1;
+      });
+    },
+    findTag: state => tag => {
+      return state.questions.filter(question => {
+        return question.tags.indexOf(tag) > -1;
       });
     },
     getQuestionById: state => id => {
@@ -34,7 +41,7 @@ export default new Vuex.Store({
   },
   mutations: {
     SET_QUESTION(state, questions) {
-      state.questions = questions;
+      state.questions = questions.reverse();
     },
     SET_MY_QUESTION(state, questions) {
       state.myQuestions = questions.reverse();
@@ -45,9 +52,15 @@ export default new Vuex.Store({
     SET_SEARCH_RESULT(state, result) {
       state.searchResult = result;
     },
+    SET_TAGGED_QUESTION(state, result) {
+      state.taggedQuestions = result;
+    },
     SET_IS_LOGIN(state, user) {
       state.isLogin = !state.isLogin;
       state.user = state.user ? null : user;
+    },
+    SET_IS_TITLE_SEARCH(state) {
+      state.isTitleSearch = !state.isTitleSearch;
     },
   },
   actions: {
@@ -92,8 +105,14 @@ export default new Vuex.Store({
     getSearchResult({ commit }, data) {
       commit('SET_SEARCH_RESULT', data);
     },
+    getTaggedQuestions({ commit }, data) {
+      commit('SET_TAGGED_QUESTION', data);
+    },
     login({ commit }, user) {
       commit('SET_IS_LOGIN', user);
+    },
+    isTitleSearch({ commit }) {
+      commit('SET_IS_TITLE_SEARCH');
     },
   },
 });

@@ -33,7 +33,7 @@
         <div class="col-7 p-0">
           <div class="d-flex">
             <div class="d-flex-column">
-              <div class="" v-if="question.upvotes">
+              <div v-if="question.upvotes">
                 <i class="fas fa-caret-up fa-3x"
                    :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`"
                    @click.prevent="vote(question._id, 'upvote')">
@@ -43,7 +43,7 @@
                   v-if="question.upvotes && question.downvotes">
                 {{ question.upvotes.length - question.downvotes.length }}
               </div>
-              <div class="" v-if="question.downvotes">
+              <div v-if="question.downvotes">
                 <i class="fas fa-caret-down fa-3x"
                    :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`"
                    @click.prevent="vote(question._id, 'downvote')">
@@ -54,9 +54,25 @@
           </div>
         </div>
       </div>
+      <div class="row justify-content-center">
+        <div class="col-7 mt-3 p-0">
+          <div class="d-flex">
+            <div class="mr-1 mb-1 px-1 py-0 border rounded"
+                 style="background-color: #e1ecf4;"
+                 v-for="(tag, index) in question.tags" :key="index">
+                <small>
+                  <router-link class="nav-link p-0"
+                               :to="`/questions/tagged/${tag}`">
+                    {{ tag }}
+                  </router-link>
+                </small>
+            </div>
+          </div>
+        </div>
+      </div>
       <!------------------------------------------------>
       <div class="row justify-content-center">
-        <div class="col-7 p-0 mt-5 border-bottom border-dark">
+        <div class="col-7 p-0 mt-2 border-bottom border-dark">
           <div class=""
                style="width: 70%; font-weight: 400; font-size: 22px;"
                v-if="question.answers">
@@ -107,9 +123,14 @@ export default {
       moment,
     };
   },
-  mounted() {
+  created() {
     this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
-    this.refreshQuestion(this.question);
+    if(!this.question) {
+      this.question = {};
+      this.$router.push('/questions');
+    } else {
+      this.refreshQuestion(this.question);
+    }
   },
   methods: {
     vote(id, type) {
@@ -216,6 +237,7 @@ export default {
     },
     refreshQuestion(question) {
       this.question = question;
+      // this.$sortByVotes(this.question);
       this.$sortByAccepted(this.question);
     },
   },

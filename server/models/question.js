@@ -25,8 +25,11 @@ let questionSchema = new Schema({
   }],
   isAnswered: {
     type: Boolean,
-    
   },
+  tags: [{
+    type: String,
+    enum: ['javascript', 'html', 'css', 'mongoose', 'mongodb'],
+  }],
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Users',

@@ -59,9 +59,8 @@ export default {
     };
   },
   beforeMount() {
-    if(this.$route.params.id && this.isEdit) {
+    if(this.$route.params.id && this.isEdit && this.$store.state.isLogin) {
       this.answer = this.$store.getters.getAnswerById(this.$route.params.id)[0];
-      console.log(this.answer)
     }
   },
   methods: {
@@ -79,7 +78,7 @@ export default {
             },
           })
           .then(({ data }) => {
-            this.$axios
+            return this.$axios
               .put(`/question/${this.$route.params.id}/addAnswer`, {
                 answer: data._id,
               }, {

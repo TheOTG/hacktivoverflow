@@ -22,18 +22,36 @@
                 answers
               </small>
             </div>
-            <div class="container" style="min-height: 60px;">
+            <div class="container" style="min-height: 60px; min-width: 0;">
               <div class="row justify-content-start">
                 <div class="col mt-1">
-                  <router-link style="font-size: 18px; text-decoration: none;"
+                  <router-link style="font-size: 18px; text-decoration: none; word-wrap: break-word;"
                                :to="`/questions/${question._id}`">
                     {{ question.title }}
                   </router-link>
                 </div>
               </div>
               <div class="row">
-                <div class="col">
-                  <div v-if="isUser">
+                <div class="col align-self-end">
+                  <div class="d-flex">
+                    <div class="container-fluid">
+                      <div class="row justify-content-start">
+                        <div class="col-md-auto mr-1 mb-1 px-1 py-0 border rounded"
+                             style="background-color: #e1ecf4;"
+                             v-for="(tag, index) in question.tags" :key="index">
+                          <small>
+                            <router-link class="nav-link p-0"
+                                        :to="`/questions/tagged/${tag}`">
+                              {{ tag }}
+                            </router-link>
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col align-self-end">
+                  <div v-if="isUser" class="text-right">
                     <small>
                       <router-link :to="`/questions/${question._id}/edit`">
                         Edit
@@ -44,8 +62,6 @@
                       </a>
                     </small>
                   </div>
-                </div>
-                <div class="col">
                   <small class="text-muted float-right">
                     asked {{ moment(question.createdAt).fromNow() }}
                     by {{ question.user.name }}

@@ -82,12 +82,16 @@ export default {
       this.$router.push('/');
     },
     searchQuestion() {
-      this.$router.push({
-        path: '/questions/search',
-        query: {
-          q: this.search,
-        },
-      });
+      if(this.$store.state.isTitleSearch) {
+        this.$router.push({
+          path: '/questions/search',
+          query: {
+            q: this.search,
+          },
+        });
+      } else {
+        this.$router.push(`/questions/tagged/${this.search}`)
+      }
       this.search = '';
     },
   },

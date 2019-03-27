@@ -1,7 +1,19 @@
 <template>
-  <div v-if="$store.state.isLogin">
+  <div>
     <ListTemplate>
       <template v-slot:top>My Questions</template>
+      <template v-slot:resultLength>
+        {{ $store.state.myQuestions.length }} questions
+      </template>
+      <template v-slot:emptyResult>
+        <div class="row align-items-center mt-3">
+          <div class="col-7">
+            <div v-if="!$store.state.myQuestions.length">
+              <h3>You don't have any questions right now.</h3>
+            </div>
+          </div>
+        </div>
+      </template>
     </ListTemplate>
     <Question v-for="(question, index) in $store.state.myQuestions"
               :key="index"
@@ -21,7 +33,7 @@ export default {
     Question,
     ListTemplate,
   },
-  beforeMount() {
+  mounted() {
     if(this.$store.state.isLogin) {
       this.$store.dispatch('getMyQuestions');
     } else {

@@ -3,7 +3,8 @@
     <div class="row justify-content-center">
       <div class="col-6">
         <form @submit.prevent="newQuestion">
-          <h3 class="text-center">Ask Something!</h3>
+          <h3 class="text-center" v-if="isEdit">Edit Question</h3>
+          <h3 class="text-center" v-else>Ask Something!</h3>
           <div class="form-group">
             <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
             <label>Title</label>
@@ -19,6 +20,21 @@
               :config="editorConfig"
               v-model="question.description">
             </ckeditor>
+          </div>
+          <div class="form-group">
+            <label>Tags</label>
+            <div class="border rounded" style="overflow: inherit;">
+              <input class="ml-3 mr-1" type="checkbox" value="javascript" v-model="question.tags">
+              <label>javascript</label>
+              <input class="ml-3 mr-1" type="checkbox" value="html" v-model="question.tags">
+              <label>html</label>
+              <input class="ml-3 mr-1" type="checkbox" value="css" v-model="question.tags">
+              <label>css</label>
+              <input class="ml-3 mr-1" type="checkbox" value="mongoose" v-model="question.tags">
+              <label>mongoose</label>
+              <input class="ml-3 mr-1" type="checkbox" value="mongodb" v-model="question.tags">
+              <label>mongodb</label>
+            </div>
           </div>
           <button v-if="!isLoading"
                   type="submit"
@@ -59,6 +75,7 @@ export default {
       question: {
         title: '',
         description: '',
+        tags: [],
       },
       isLoading: false,
       errorMsg: null,
@@ -66,7 +83,12 @@ export default {
   },
   beforeMount() {
     if(this.$route.params.id && this.isEdit) {
-      this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
+      let questionObj = this.$store.getters.getQuestionById(this.$route.params.id)[0];
+      this.question = {
+        title: questionObj.title,
+        description: questionObj.description,
+        tags: questionObj.tags,
+      }
     }
   },
   mounted() {
@@ -87,6 +109,7 @@ export default {
         [method](`/question${edit}`, {
           title: this.question.title,
           description: this.question.description,
+          tags: this.question.tags,
         }, {
           headers: {
             access_token: localStorage.access_token,

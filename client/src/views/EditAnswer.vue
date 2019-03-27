@@ -17,7 +17,7 @@ export default {
   components: {
     AnswerForm,
   },
-  mounted() {
+  beforeCreate() {
     if(!this.$store.state.isLogin) {
       this.$router.push('/login');
     }

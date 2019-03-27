@@ -33,6 +33,16 @@ export default new Router({
           component: () => import(/* webpackChunkName: "searchquestion" */ './views/SearchPage.vue'),
         },
         {
+          path: 'tagged/:tag',
+          name: 'tagged-question',
+          component: () => import(/* webpackChunkName: "taggedquestion" */ './views/TaggedQuestion.vue'),
+        },
+        {
+          path: 'tagged/*',
+          name: 'no-tagged-questions',
+          component: () => import(/* webpackChunkName: "taggedquestion" */ './views/TaggedQuestion.vue'),
+        },
+        {
           path: 'new',
           name: 'new-question',
           component: () => import(/* webpackChunkName: "newquestion" */ './views/NewQuestion.vue'),
