@@ -32,5 +32,8 @@ export default {
     Question,
     ListTemplate,
   },
+  mounted() {
+    this.$store.dispatch('getQuestions');
+  },
 };
 </script>
