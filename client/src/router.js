@@ -48,7 +48,7 @@ export default new Router({
           name: 'new-question',
           component: () => import(/* webpackChunkName: "newquestion" */ './views/NewQuestion.vue'),
           beforeEnter(to, from, next) {
-            if(!store.state.isLogin) {
+            if(!store.state.isLogin && !localStorage.access_token) {
               next('/login');
             } else {
               next();
@@ -60,7 +60,7 @@ export default new Router({
           name: 'my-questions',
           component: () => import(/* webpackChunkName: "myquestions" */ './views/MyQuestions.vue'),
           beforeEnter(to, from, next) {
-            if(!store.state.isLogin) {
+            if(!store.state.isLogin && !localStorage.access_token) {
               next('/login');
             } else {
               next();
@@ -72,7 +72,7 @@ export default new Router({
           name: 'edit-question',
           component: () => import(/* webpackChunkName: "editquestion" */ './views/EditQuestion.vue'),
           beforeEnter(to, from, next) {
-            if(!store.state.isLogin) {
+            if(!store.state.isLogin && !localStorage.access_token) {
               next('/login');
             } else {
               next();
@@ -91,7 +91,7 @@ export default new Router({
       name: 'my-answers',
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue'),
       beforeEnter(to, from, next) {
-        if(!store.state.isLogin) {
+        if(!store.state.isLogin && !localStorage.access_token) {
           next('/login');
         } else {
           next();
@@ -115,7 +115,7 @@ export default new Router({
       name: 'register',
       component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
       beforeEnter(to, from, next) {
-        if(store.state.isLogin) {
+        if(store.state.isLogin || localStorage.access_token) {
           next('/questions');
         } else {
           next();
@@ -127,7 +127,7 @@ export default new Router({
       name: 'login',
       component: () => import(/* webpackChunkName: "loginpage" */ './views/LoginPage.vue'),
       beforeEnter(to, from, next) {
-        if(store.state.isLogin) {
+        if(store.state.isLogin || localStorage.access_token) {
           next('/questions');
         } else {
           next();
