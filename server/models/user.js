@@ -43,7 +43,11 @@ let userSchema = new Schema({
   name: {
     type: String,
     required: [true, 'Name is required'],
-  }
+  },
+  watchedTags: [{
+    type: String,
+    enum: ['javascript', 'html', 'css', 'mongoose', 'mongodb'],
+  }],
 });
 
 userSchema.post('validate', function(doc) {
