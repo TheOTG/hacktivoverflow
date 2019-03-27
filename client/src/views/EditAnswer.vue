@@ -17,10 +17,5 @@ export default {
   components: {
     AnswerForm,
   },
-  beforeCreate() {
-    if(!this.$store.state.isLogin) {
-      this.$router.push('/login');
-    }
-  },
 };
 </script>

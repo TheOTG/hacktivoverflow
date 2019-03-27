@@ -237,7 +237,6 @@ export default {
     },
     refreshQuestion(question) {
       this.question = question;
-      // this.$sortByVotes(this.question);
       this.$sortByAccepted(this.question);
     },
   },

@@ -54,11 +54,6 @@ export default {
       errorMsg: null,
     };
   },
-  mounted() {
-    if (this.$store.state.isLogin) {
-      this.$router.push('/questions');
-    }
-  },
   methods: {
     register() {
       this.isLoading = true;
@@ -73,7 +68,7 @@ export default {
             `Welcome aboard, ${data.name}!`,
             'success');
           this.errorMsg = null;
-          this.$router.push('/');
+          this.$router.push('/login');
         })
         .catch((err) => {
           const { errors } = err.response.data;

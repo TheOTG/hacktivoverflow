@@ -91,11 +91,6 @@ export default {
       }
     }
   },
-  mounted() {
-    if(!this.$store.state.isLogin) {
-      this.$router.push('/login');
-    }
-  },
   methods: {
     newQuestion() {
       this.isLoading = true;

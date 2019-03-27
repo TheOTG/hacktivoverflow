@@ -175,13 +175,16 @@ export default {
             });
         }).then(({ data }) => {
           this.$emit('refreshQuestion', data);
+          this.$swal(`You accepted ${this.answer.user.name}'s answer!`,
+                     `Thank you for using our platform.`,
+                     'success');
         })
         .catch((err) => {
           console.log(err);
         });
     },
     isOwner(id) {
-      if(localStorage.userId === id) {
+      if(this.$store.state.user === id) {
         return true;
       }
       return false;

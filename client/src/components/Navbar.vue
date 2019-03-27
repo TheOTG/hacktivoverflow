@@ -48,7 +48,7 @@
       </router-link>
       <div v-if="$store.state.isLogin"
            class="nav-item ml-2 mr-2">
-        Hello, {{ $store.state.user }}!
+        Hello, {{ $store.state.name }}!
       </div>
       <button v-if="$store.state.isLogin"
               @click.prevent="logout"
@@ -74,7 +74,7 @@ export default {
   },
   methods: {
     logout() {
-      this.$store.dispatch('login');
+      this.$store.dispatch('login', {});
       this.$swal('Logout successful!',
         `See you next time, ${localStorage.name}!`,
         'success');

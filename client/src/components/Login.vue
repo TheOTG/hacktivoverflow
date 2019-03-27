@@ -57,7 +57,10 @@ export default {
           this.$swal('Login successful!',
             `Welcome back, ${name}!`,
             'success');
-          this.$store.dispatch('login', name);
+          this.$store.dispatch('login', {
+            userId,
+            name,
+          });
           this.$store.dispatch('getMyAnswers');
           this.errorMsg = null;
           this.$router.push('/questions/mylist');

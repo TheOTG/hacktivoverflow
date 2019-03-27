@@ -14,6 +14,7 @@ export default new Vuex.Store({
     searchResult: [],
     taggedQuestions: [],
     isLogin: false,
+    name: null,
     user: null,
     isTitleSearch: true,
   },
@@ -57,7 +58,8 @@ export default new Vuex.Store({
     },
     SET_IS_LOGIN(state, user) {
       state.isLogin = !state.isLogin;
-      state.user = state.user ? null : user;
+      state.user = state.user ? null : user.userId;
+      state.name = state.name ? null : user.name;
     },
     SET_IS_TITLE_SEARCH(state) {
       state.isTitleSearch = !state.isTitleSearch;

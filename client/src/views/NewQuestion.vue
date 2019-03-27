@@ -11,10 +11,5 @@ export default {
   components: {
     QuestionForm,
   },
-  mounted() {
-    if (!this.$store.state.isLogin) {
-      this.$router.push('/login');
-    }
-  },
 };
 </script>

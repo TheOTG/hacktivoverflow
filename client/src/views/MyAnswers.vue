@@ -31,11 +31,7 @@ export default {
     ListTemplate,
   },
   mounted() {
-    if(this.$store.state.isLogin) {
-      this.$store.dispatch('getMyAnswers');
-    } else {
-      this.$router.push('/login');
-    }
+    this.$store.dispatch('getMyAnswers');
   },
 };
 </script>

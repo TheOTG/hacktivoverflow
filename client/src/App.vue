@@ -16,7 +16,10 @@ export default {
   },
   beforeCreate() {
     if(localStorage.access_token) {
-      this.$store.dispatch('login', localStorage.name);
+      this.$store.dispatch('login', {
+        userId: localStorage.userId,
+        name: localStorage.name,
+      });
       this.$store.dispatch('getMyAnswers');
     }
     this.$store.dispatch('getQuestions');

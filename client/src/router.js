@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import store from '../src/store';
 
 Vue.use(Router);
 
@@ -46,16 +47,37 @@ export default new Router({
           path: 'new',
           name: 'new-question',
           component: () => import(/* webpackChunkName: "newquestion" */ './views/NewQuestion.vue'),
+          beforeEnter(to, from, next) {
+            if(!store.state.isLogin) {
+              next('/login');
+            } else {
+              next();
+            }
+          },
         },
         {
           path: 'mylist',
           name: 'my-questions',
           component: () => import(/* webpackChunkName: "myquestions" */ './views/MyQuestions.vue'),
+          beforeEnter(to, from, next) {
+            if(!store.state.isLogin) {
+              next('/login');
+            } else {
+              next();
+            }
+          },
         },
         {
           path: ':id/edit',
           name: 'edit-question',
           component: () => import(/* webpackChunkName: "editquestion" */ './views/EditQuestion.vue'),
+          beforeEnter(to, from, next) {
+            if(!store.state.isLogin) {
+              next('/login');
+            } else {
+              next();
+            }
+          },
         },
         {
           path: ':id',
@@ -68,6 +90,13 @@ export default new Router({
       path: '/myanswers',
       name: 'my-answers',
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue'),
+      beforeEnter(to, from, next) {
+        if(!store.state.isLogin) {
+          next('/login');
+        } else {
+          next();
+        }
+      },
       children: [
         {
           path: '/myanswers',
@@ -85,11 +114,25 @@ export default new Router({
       path: '/register',
       name: 'register',
       component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
+      beforeEnter(to, from, next) {
+        if(store.state.isLogin) {
+          next('/questions');
+        } else {
+          next();
+        }
+      },
     },
     {
       path: '/login',
       name: 'login',
       component: () => import(/* webpackChunkName: "loginpage" */ './views/LoginPage.vue'),
+      beforeEnter(to, from, next) {
+        if(store.state.isLogin) {
+          next('/questions');
+        } else {
+          next();
+        }
+      },
     },
   ],
 });

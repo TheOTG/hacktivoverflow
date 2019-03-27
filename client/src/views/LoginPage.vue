@@ -22,10 +22,5 @@ export default {
   components: {
     Login,
   },
-  beforeMount() {
-    if(this.$store.state.isLogin) {
-      this.$router.push('/questions');
-    }
-  },
 };
 </script>

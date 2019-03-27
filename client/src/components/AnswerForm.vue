@@ -59,7 +59,7 @@ export default {
     };
   },
   beforeMount() {
-    if(this.$route.params.id && this.isEdit && this.$store.state.isLogin) {
+    if(this.$route.params.id && this.isEdit) {
       this.answer = this.$store.getters.getAnswerById(this.$route.params.id)[0];
     }
   },

@@ -20,18 +20,6 @@ Vue.prototype.$sortByAccepted = function(question) {
   });
 };
 
-Vue.prototype.$sortByVotes = function(question) {
-  let run = true;
-  while(run) {
-    if(question.answers.upvotes) {
-      question.answers.sort((a, b) => {
-        return (a.upvotes - a.downvotes) > (b.upvotes - b.downvotes);
-      });
-      run = false;
-    }
-  }
-};
-
 Vue.config.productionTip = false;
 
 new Vue({
