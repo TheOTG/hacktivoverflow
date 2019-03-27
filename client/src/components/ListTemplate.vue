@@ -2,9 +2,9 @@
   <div>
     <div class="container-fluid">
       <div class="row justify-content-center align-items-center">
-        <div class="col-7">
+        <div class="col-7 p-0 border-bottom border-dark">
           <div class="container-fluid">
-            <div class="row justify-content-center align-items-center border-bottom border-dark">
+            <div class="row mb-0 justify-content-center align-items-center">
               <div class="col p-0">
                 <h3><slot name="top"></slot></h3>
                 <slot name="resultLength"></slot>

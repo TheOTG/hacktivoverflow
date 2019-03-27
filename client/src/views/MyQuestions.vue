@@ -6,7 +6,7 @@
         {{ $store.state.myQuestions.length }} questions
       </template>
       <template v-slot:emptyResult>
-        <div class="row align-items-center mt-3">
+        <div class="row align-items-center">
           <div class="col-7">
             <div v-if="!$store.state.myQuestions.length">
               <h3>You don't have any questions right now.</h3>

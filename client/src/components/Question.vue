@@ -1,6 +1,6 @@
 <template>
-  <div class="container-fluid">
-    <div class="row justify-content-center">
+  <div class="container-fluid p-0">
+    <div class="row no-gutters justify-content-center">
       <div class="col-7">
         <div class="d-flex flex-column border-bottom">
           <div class="d-flex flex-row">
