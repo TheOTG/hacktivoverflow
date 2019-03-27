@@ -13,14 +13,14 @@
             </router-link>
             <!------------------>
           </div>
-          <small class="text-muted mt-auto" 
+          <small class="text-muted mt-auto"
                  v-if="question.user">
             asked by {{ question.user.name }} {{ moment(question.createdAt).fromNow() }}
             <div class="float-right" v-if="isOwner(question.user._id)">
               <router-link :to="`/questions/${question._id}/edit`">
                 Edit
-              </router-link> 
-                | 
+              </router-link>
+                |
               <a @click.prevent="deleteQuestion(question._id)" href="">
                 Delete
               </a>
@@ -34,18 +34,18 @@
           <div class="d-flex">
             <div class="d-flex-column">
               <div class="" v-if="question.upvotes">
-                <i class="fas fa-caret-up fa-3x" 
-                   :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`" 
+                <i class="fas fa-caret-up fa-3x"
+                   :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`"
                    @click.prevent="vote(question._id, 'upvote')">
                 </i>
               </div>
-              <div class="text-center" style="font-size: 20px;" 
+              <div class="text-center" style="font-size: 20px;"
                   v-if="question.upvotes && question.downvotes">
                 {{ question.upvotes.length - question.downvotes.length }}
               </div>
               <div class="" v-if="question.downvotes">
-                <i class="fas fa-caret-down fa-3x" 
-                   :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`"  
+                <i class="fas fa-caret-down fa-3x"
+                   :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`"
                    @click.prevent="vote(question._id, 'downvote')">
                 </i>
               </div>
@@ -58,7 +58,7 @@
       <div class="row justify-content-center">
         <div class="col-7 p-0 mt-5 border-bottom border-dark">
           <div class=""
-               style="width: 70%; font-weight: 400; font-size: 22px;" 
+               style="width: 70%; font-weight: 400; font-size: 22px;"
                v-if="question.answers">
             {{ question.answers.length }} Answers
           </div>
@@ -67,11 +67,11 @@
       <!--------- ANSWER COMPONENT ---------->
       <div v-if="question.answers">
         <div v-if="question.answers.length">
-          <div class="row justify-content-center" 
+          <div class="row justify-content-center"
                v-for="(answer, index) in question.answers" :key="index">
             <div class="col-7 border-bottom border-dark p-0">
-              <Answer @refreshQuestion="refreshQuestion($event)" 
-                      :answer="answer" 
+              <Answer @refreshQuestion="refreshQuestion($event)"
+                      :answer="answer"
                       :question-owner="question.user" />
             </div>
           </div>
@@ -113,37 +113,40 @@ export default {
   },
   methods: {
     vote(id, type) {
-      let path = null;
-      let hasVoted = false;
-      if(this.hasUpVoted()) {
-        path = 'cancelUpvote';
-      } else if(this.hasDownVoted()) {
-        path = 'cancelDownvote';
-      }
-      if(path) {
-        this.$axios
-          .put(`/question/${id}/${path}`, {}, {
-            headers: {
-              access_token: localStorage.access_token,
-            },
-          })
-          .then(({ data }) => {
-            if(path.search(new RegExp(type, 'i')) === -1) {
-              if(type === 'upvote') {
-                this.upvote(id);
-              } else {
-                this.downvote(id);
-              }
-            } else {
-              this.question = data;
-              this.refreshQuestion(this.question);
-            }
-          })
-          .catch(err => {
-            console.log(err);
-          });
+      if(!this.$store.state.isLogin) {
+        this.$router.push('/login');
       } else {
-        eval(`this.${type}(id)`);
+        let path = null;
+        if(this.hasUpVoted()) {
+          path = 'cancelUpvote';
+        } else if(this.hasDownVoted()) {
+          path = 'cancelDownvote';
+        }
+        if(path) {
+          this.$axios
+            .put(`/question/${id}/${path}`, {}, {
+              headers: {
+                access_token: localStorage.access_token,
+              },
+            })
+            .then(({ data }) => {
+              if(path.search(new RegExp(type, 'i')) === -1) {
+                if(type === 'upvote') {
+                  this.upvote(id);
+                } else {
+                  this.downvote(id);
+                }
+              } else {
+                this.question = data;
+                this.refreshQuestion(this.question);
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          this[type](id);
+        }
       }
     },
     upvote(id) {
@@ -151,13 +154,13 @@ export default {
         .put(`/question/${id}/upvote`, {}, {
           headers: {
             access_token: localStorage.access_token,
-          }
+          },
         })
         .then(({ data }) => {
           this.question = data;
           this.refreshQuestion(this.question);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -166,29 +169,27 @@ export default {
         .put(`/question/${id}/downvote`, {}, {
           headers: {
             access_token: localStorage.access_token,
-          }
+          },
         })
         .then(({ data }) => {
           this.question = data;
           this.refreshQuestion(this.question);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
     hasUpVoted() {
       if(this.question.upvotes.indexOf(localStorage.userId) > -1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     hasDownVoted() {
       if(this.question.downvotes.indexOf(localStorage.userId) > -1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     isOwner(id) {
       if(localStorage.userId === id) {
@@ -207,17 +208,16 @@ export default {
           return this.$store.dispatch('getQuestions');
         })
         .then(() => {
-          this.$store.dispatch('getMyQuestions');
-          this.$router.push('/')
+          this.$router.push('/');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
     refreshQuestion(question) {
       this.question = question;
       this.$sortByAccepted(this.question);
-    }
+    },
   },
 };
 </script>

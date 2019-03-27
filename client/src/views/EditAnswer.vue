@@ -15,7 +15,7 @@ import AnswerForm from '@/components/AnswerForm.vue';
 export default {
   name: 'EditAnswer',
   components: {
-    AnswerForm
+    AnswerForm,
   },
   mounted() {
     if(!this.$store.state.isLogin) {

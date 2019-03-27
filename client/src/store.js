@@ -8,9 +8,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    questions: [],    // stores all questions
-    myQuestions: [],  // stores currently logged in user questions
-    myAnswers: [],    // stores currently logged in user answers
+    questions: [], // stores all questions
+    myQuestions: [], // stores currently logged in user questions
+    myAnswers: [], // stores currently logged in user answers
     searchResult: [], // stores all questions that match the search
     isLogin: false,
     user: null,
@@ -37,10 +37,10 @@ export default new Vuex.Store({
       state.questions = questions;
     },
     SET_MY_QUESTION(state, questions) {
-      state.myQuestions = questions;
+      state.myQuestions = questions.reverse();
     },
     SET_MY_ANSWER(state, answers) {
-      state.myAnswers = answers;
+      state.myAnswers = answers.reverse();
     },
     SET_SEARCH_RESULT(state, result) {
       state.searchResult = result;
@@ -57,9 +57,9 @@ export default new Vuex.Store({
         .then(({ data }) => {
           commit('SET_QUESTION', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
     getMyQuestions({ commit }) {
       axios
@@ -71,9 +71,9 @@ export default new Vuex.Store({
         .then(({ data }) => {
           commit('SET_MY_QUESTION', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
     getMyAnswers({ commit }) {
       axios
@@ -85,9 +85,9 @@ export default new Vuex.Store({
         .then(({ data }) => {
           commit('SET_MY_ANSWER', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
     getSearchResult({ commit }, data) {
       commit('SET_SEARCH_RESULT', data);

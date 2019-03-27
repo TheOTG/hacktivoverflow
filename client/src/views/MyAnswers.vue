@@ -2,9 +2,9 @@
   <div class="container-fluid">
     <div class="row justify-content-center">
       <div class="col-7">
-        <Answer v-for="(answer, index) in $store.state.myAnswers" 
-            :key="index" 
-            :answer="answer" 
+        <Answer v-for="(answer, index) in $store.state.myAnswers"
+            :key="index"
+            :answer="answer"
             :my-answer="true" />
       </div>
     </div>
@@ -21,7 +21,11 @@ export default {
     Answer,
   },
   mounted() {
-    this.$store.dispatch('getMyAnswers');
+    if(this.$store.state.isLogin) {
+      this.$store.dispatch('getMyAnswers');
+    } else {
+      this.$router.push('/login');
+    }
   },
 };
 </script>

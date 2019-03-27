@@ -4,17 +4,17 @@
       <div class="col-7">
         <div class="d-flex flex-column border-bottom">
           <div class="d-flex flex-row">
-            <div class="d-flex flex-column align-items-center mt-2 ml-4 mr-2" 
-                 :style="`color: ${(question.upvotes.length - question.downvotes.length) === 0 ? 
+            <div class="d-flex flex-column align-items-center mt-2 ml-4 mr-2"
+                 :style="`color: ${(question.upvotes.length - question.downvotes.length) === 0 ?
                          '' : (question.upvotes.length - question.downvotes.length) > 0 ?
-                         '#5cb85c' : '#dc3545'};`" 
+                         '#5cb85c' : '#dc3545'};`"
                  v-if="question.upvotes && question.downvotes">
               {{ question.upvotes.length - question.downvotes.length }}
               <small>
                 votes
               </small>
             </div>
-            <div class="d-flex flex-column align-items-center mt-2 ml-2 mr-2" 
+            <div class="d-flex flex-column align-items-center mt-2 ml-2 mr-2"
                  :style="`color: ${question.isAnswered ? '#5cb85c' : ''};`"
                  v-if="question.answers">
               {{ question.answers.length }}
@@ -25,7 +25,7 @@
             <div class="container" style="min-height: 60px;">
               <div class="row justify-content-start">
                 <div class="col mt-1">
-                  <router-link style="font-size: 18px; text-decoration: none;" 
+                  <router-link style="font-size: 18px; text-decoration: none;"
                                :to="`/questions/${question._id}`">
                     {{ question.title }}
                   </router-link>
@@ -37,8 +37,8 @@
                     <small>
                       <router-link :to="`/questions/${question._id}/edit`">
                         Edit
-                      </router-link> 
-                        | 
+                      </router-link>
+                        |
                       <a @click.prevent="deleteQuestion(question._id)" href="">
                         Delete
                       </a>
@@ -47,7 +47,7 @@
                 </div>
                 <div class="col">
                   <small class="text-muted float-right">
-                    asked {{ moment(question.createdAt).fromNow() }} 
+                    asked {{ moment(question.createdAt).fromNow() }}
                     by {{ question.user.name }}
                   </small>
                 </div>
@@ -68,7 +68,7 @@ export default {
   data() {
     return {
       moment,
-    }
+    };
   },
   methods: {
     deleteQuestion(id) {
@@ -79,12 +79,12 @@ export default {
           },
         })
         .then(() => {
-          return this.$store.dispatch('getQuestions');
+          this.$store.dispatch('getQuestions');
         })
         .then(() => {
           this.$store.dispatch('getMyQuestions');
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },

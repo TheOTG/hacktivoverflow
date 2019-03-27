@@ -23,24 +23,24 @@
           <div class="d-flex">
             <div class="d-flex-column">
               <div>
-                <i class="fas fa-caret-up fa-3x" 
-                   :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`" 
+                <i class="fas fa-caret-up fa-3x"
+                   :style="`cursor: pointer; color: ${hasUpVoted() ? '#5cb85c' : ''};`"
                    @click.prevent="vote(answer._id, 'upvote')">
                 </i>
               </div>
-              <div class="text-center" 
-                   style="font-size: 20px;" 
+              <div class="text-center"
+                   style="font-size: 20px;"
                    v-if="answer.upvotes && answer.downvotes">
                 {{ answer.upvotes.length - answer.downvotes.length }}
               </div>
               <div>
-                <i class="fas fa-caret-down fa-3x" 
-                   :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`" 
+                <i class="fas fa-caret-down fa-3x"
+                   :style="`cursor: pointer; color: ${hasDownVoted() ? '#dc3545' : ''};`"
                    @click.prevent="vote(answer._id, 'downvote')">
                 </i>
               </div>
-              <div class="text-center mb-2" 
-                   style="color: #45a163;" 
+              <div class="text-center mb-2"
+                   style="color: #45a163;"
                    v-if="answer.isAccepted">
                 <i class="fas fa-check fa-2x"></i>
               </div>
@@ -51,16 +51,16 @@
       </div>
       <div class="row border-bottom justify-content-end">
         <div class="col mb-1 p-0" v-if="myAnswer">
-          Question: 
+          Question:
           <router-link :to="`/questions/${answer.question._id}`">
             {{ answer.question.title }}
           </router-link>
         </div>
         <div v-if="questionOwner && !answer.isAccepted && !$parent.question.isAnswered">
-          <div class="col mb-1 p-0" 
-               style="text-align: right;" 
+          <div class="col mb-1 p-0"
+               style="text-align: right;"
                v-if="isOwner(questionOwner._id)">
-            <button @click.prevent="acceptAnswer" 
+            <button @click.prevent="acceptAnswer"
                     class="btn btn-success">
               Accept Answer
             </button>
@@ -85,7 +85,6 @@ export default {
   methods: {
     vote(id, type) {
       let path = null;
-      let hasVoted = false;
       if(this.hasUpVoted()) {
         path = 'cancelUpvote';
       } else if(this.hasDownVoted()) {
@@ -109,11 +108,11 @@ export default {
               this.$emit('refreshQuestion', data);
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
-          })
+          });
       } else {
-        eval(`this.${type}(id)`);
+        this[type](id);
       }
     },
     upvote(id) {
@@ -121,12 +120,12 @@ export default {
         .put(`/answer/${id}/upvote`, {}, {
           headers: {
             access_token: localStorage.access_token,
-          }
+          },
         })
         .then(({ data }) => {
           this.$emit('refreshQuestion', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
@@ -135,28 +134,26 @@ export default {
         .put(`/answer/${id}/downvote`, {}, {
           headers: {
             access_token: localStorage.access_token,
-          }
+          },
         })
         .then(({ data }) => {
           this.$emit('refreshQuestion', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
     hasUpVoted() {
       if(this.answer.upvotes.indexOf(localStorage.userId) > -1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
-    hasDownVoted(id) {
+    hasDownVoted() {
       if(this.answer.downvotes.indexOf(localStorage.userId) > -1) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     acceptAnswer() {
       this.$axios
@@ -167,7 +164,7 @@ export default {
             access_token: localStorage.access_token,
           },
         })
-        .then(({ data }) => {
+        .then(() => {
           return this.$axios
             .put(`/question/${this.$route.params.id}`, {
               isAnswered: true,
@@ -176,13 +173,12 @@ export default {
                 access_token: localStorage.access_token,
               },
             });
-        })
-        .then(({ data }) => {
+        }).then(({ data }) => {
           this.$emit('refreshQuestion', data);
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
-        })
+        });
     },
     isOwner(id) {
       if(localStorage.userId === id) {

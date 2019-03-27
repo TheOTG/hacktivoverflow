@@ -7,21 +7,21 @@
           <div class="form-group">
             <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
             <label>Title</label>
-            <input type="text" 
-                   class="form-control" 
-                   placeholder="Title" 
+            <input type="text"
+                   class="form-control"
+                   placeholder="Title"
                    v-model="question.title">
           </div>
           <div class="form-group">
             <label>Description</label>
-            <ckeditor class="form-control" 
-              :editor="editor" 
-              :config="editorConfig" 
+            <ckeditor class="form-control"
+              :editor="editor"
+              :config="editorConfig"
               v-model="question.description">
             </ckeditor>
           </div>
-          <button v-if="!isLoading" 
-                  type="submit" 
+          <button v-if="!isLoading"
+                  type="submit"
                   class="btn btn-primary w-100">
             Submit Question
           </button>
@@ -44,15 +44,15 @@ export default {
     return {
       editor: ClassicEditor,
       editorConfig: {
-        toolbar: [ 
-          'heading', 
-          '|', 
-          'bold', 
-          'italic', 
-          'link', 
-          'bulletedList', 
-          'numberedList', 
-          'blockQuote', 
+        toolbar: [
+          'heading',
+          '|',
+          'bold',
+          'italic',
+          'link',
+          'bulletedList',
+          'numberedList',
+          'blockQuote',
         ],
         placeholder: 'Description',
       },
@@ -62,7 +62,7 @@ export default {
       },
       isLoading: false,
       errorMsg: null,
-    }
+    };
   },
   beforeMount() {
     if(this.$route.params.id && this.isEdit) {
@@ -90,17 +90,17 @@ export default {
         }, {
           headers: {
             access_token: localStorage.access_token,
-          }
+          },
         })
         .then(({ data }) => {
           if(edit) {
-            this.$swal('Question successfully edited!', 
-                       '', 
-                       'success');
+            this.$swal('Question successfully edited!',
+              '',
+              'success');
           } else {
-            this.$swal('Thank you for asking!', 
-                       'Your question will be answered by other users soon.', 
-                       'success');
+            this.$swal('Thank you for asking!',
+              'Your question will be answered by other users soon.',
+              'success');
           }
           this.$store.dispatch('getQuestions');
           if(this.isEdit) {
@@ -109,18 +109,18 @@ export default {
             this.$router.push('/questions/mylist');
           }
         })
-        .catch(err => {
-          const errors = err.response.data.errors;
+        .catch((err) => {
+          const { errors } = err.response.data;
           this.errorMsg = [];
-          for(let key in errors) {
+          for (const key in errors) {
             this.errorMsg.push(errors[key].message);
           }
           this.errorMsg = this.errorMsg.join('\n');
         })
         .finally(() => {
           this.isLoading = false;
-        })
-    }
+        });
+    },
   },
   props: ['isEdit'],
 };

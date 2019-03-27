@@ -1,24 +1,25 @@
 <template>
-  <form @submit.prevent="isEdit ? editAnswer() : newAnswer()" class="mb-5">
+  <form @submit.prevent="isEdit ? editAnswer() : newAnswer()" 
+        class="mb-5">
     <div style="font-size: 24px;">Your Answer</div>
     <div class="form-group">
       <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
       <label>Title</label>
-      <input type="text" 
-             class="form-control" 
-             placeholder="Title" 
+      <input type="text"
+             class="form-control"
+             placeholder="Title"
              v-model="answer.title">
     </div>
     <div class="form-group">
       <label>Description</label>
-      <ckeditor class="form-control" 
-                :editor="editor" 
-                :config="editorConfig" 
+      <ckeditor class="form-control"
+                :editor="editor"
+                :config="editorConfig"
                 v-model="answer.description">
       </ckeditor>
     </div>
-    <button v-if="!isLoading" 
-            type="submit" 
+    <button v-if="!isLoading"
+            type="submit"
             class="btn btn-primary w-100">Submit Answer
     </button>
     <div v-if="isLoading" class="d-flex justify-content-center">
@@ -37,15 +38,15 @@ export default {
     return {
       editor: ClassicEditor,
       editorConfig: {
-        toolbar: [ 
-          'heading', 
-          '|', 
-          'bold', 
-          'italic', 
-          'link', 
-          'bulletedList', 
-          'numberedList', 
-          'blockQuote', 
+        toolbar: [
+          'heading',
+          '|',
+          'bold',
+          'italic',
+          'link',
+          'bulletedList',
+          'numberedList',
+          'blockQuote',
         ],
         placeholder: 'Description',
       },
@@ -55,16 +56,12 @@ export default {
       },
       isLoading: false,
       errorMsg: null,
-    }
+    };
   },
   beforeMount() {
     if(this.$route.params.id && this.isEdit) {
       this.answer = this.$store.getters.getAnswerById(this.$route.params.id)[0];
-    }
-  },
-  mounted() {
-    if(!this.$store.state.isLogin) {
-      this.$router.push('/login');
+      console.log(this.answer)
     }
   },
   methods: {
@@ -72,37 +69,37 @@ export default {
       if(this.$store.state.isLogin) {
         this.isLoading = true;
         this.$axios
-          .post(`/answer`, {
+          .post('/answer', {
             title: this.answer.title,
             description: this.answer.description,
             question: this.$route.params.id,
           }, {
             headers: {
               access_token: localStorage.access_token,
-            }
+            },
           })
           .then(({ data }) => {
-            return this.$axios
+            this.$axios
               .put(`/question/${this.$route.params.id}/addAnswer`, {
                 answer: data._id,
               }, {
                 headers: {
                   access_token: localStorage.access_token,
-                }
-              })
+                },
+              });
           })
           .then(({ data }) => {
-            this.$swal('Thank you for answering!', 
-                       'Hopefully it will help fix the problem.', 
+            this.$swal('Thank you for answering!',
+                       'Hopefully it will help fix the problem.',
                        'success');
             this.answer.title = '';
             this.answer.description = '';
             this.$emit('refreshQuestion', data);
           })
-          .catch(err => {
-            const errors = err.response.data.errors;
+          .catch((err) => {
+            const { errors } = err.response.data;
             this.errorMsg = [];
-            for(let key in errors) {
+            for (const key in errors) {
               this.errorMsg.push(errors[key].message);
             }
             this.errorMsg = this.errorMsg.join('\n');
@@ -127,14 +124,14 @@ export default {
             },
           })
           .then(({ data }) => {
-            this.$swal('Answer successfully edited!', 
-                       'Your answer should be more informative now.', 
+            this.$swal('Answer successfully edited!',
+                       'Your answer should be more informative now.',
                        'success');
             this.answer.title = '';
             this.answer.description = '';
             this.$router.go(-1);
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
           })
           .finally(() => {

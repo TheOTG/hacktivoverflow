@@ -9,13 +9,16 @@
 
 <script>
 import Navbar from '@/components/Navbar.vue';
+
 export default {
   components: {
     Navbar,
   },
   beforeCreate() {
     this.$store.dispatch('getQuestions');
-    this.$store.dispatch('getMyAnswers');
+    if(this.$store.state.isLogin) {
+      this.$store.dispatch('getMyAnswers');
+    }
   },
   mounted() {
     if(localStorage.access_token) {

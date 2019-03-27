@@ -7,27 +7,27 @@
           <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
           <div class="form-group">
             <label>Display Name</label>
-            <input type="text" 
-                   class="form-control" 
-                   placeholder="Name" 
+            <input type="text"
+                   class="form-control"
+                   placeholder="Name"
                    v-model="name">
           </div>
           <div class="form-group">
             <label>Email address</label>
-            <input type="email" 
-                   class="form-control" 
-                   placeholder="E-mail" 
+            <input type="email"
+                   class="form-control"
+                   placeholder="E-mail"
                    v-model="email">
           </div>
           <div class="form-group">
             <label>Password</label>
-            <input type="password" 
-                   class="form-control" 
-                   placeholder="Password" 
+            <input type="password"
+                   class="form-control"
+                   placeholder="Password"
                    v-model="password">
           </div>
-          <button v-if="!isLoading" 
-                  type="submit" 
+          <button v-if="!isLoading"
+                  type="submit"
                   class="btn btn-primary w-100">
             Register
           </button>
@@ -55,7 +55,7 @@ export default {
     };
   },
   mounted() {
-    if(this.$store.state.isLogin) {
+    if (this.$store.state.isLogin) {
       this.$router.push('/questions');
     }
   },
@@ -69,23 +69,23 @@ export default {
           password: this.password,
         })
         .then(({ data }) => {
-          this.$swal('Registration success!', 
-                     `Welcome aboard, ${data.name}!`, 
-                     'success');
+          this.$swal('Registration success!',
+            `Welcome aboard, ${data.name}!`,
+            'success');
           this.errorMsg = null;
           this.$router.push('/');
         })
-        .catch(err => {
-          const errors = err.response.data.errors;
+        .catch((err) => {
+          const { errors } = err.response.data;
           this.errorMsg = [];
-          for(let key in errors) {
+          for (const key in errors) {
             this.errorMsg.push(errors[key].message);
           }
           this.errorMsg = this.errorMsg.join('\n');
         })
         .finally(() => {
           this.isLoading = false;
-        })
+        });
     },
   },
 };

@@ -1,37 +1,32 @@
 <template>
-  <div>
-    <div class="container-fluid">
-      <div class="row justify-content-center">
-        <div class="col-7">
-          <router-link class="float-right my-2" to="/questions/new">
-            <button class="btn btn-primary">Ask Question</button>
-          </router-link>
-        </div>
-      </div>
-    </div>
-    <Question v-for="(question, index) in $store.state.myQuestions" 
-              :key="index" 
-              :question="question" 
-              :is-user="isUser" />
+  <div v-if="$store.state.isLogin">
+    <ListTemplate>
+      <template v-slot:top>My Questions</template>
+    </ListTemplate>
+    <Question v-for="(question, index) in $store.state.myQuestions"
+              :key="index"
+              :question="question"
+              :is-user="true" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import Question from '@/components/Question.vue';
+import ListTemplate from '@/components/ListTemplate.vue';
 
 export default {
   name: 'MyQuestions',
   components: {
     Question,
+    ListTemplate,
   },
-  data() {
-    return {
-      isUser: true,
-    };
-  },
-  mounted() {
-    this.$store.dispatch('getMyQuestions');
+  beforeMount() {
+    if(this.$store.state.isLogin) {
+      this.$store.dispatch('getMyQuestions');
+    } else {
+      this.$router.push('/login');
+    }
   },
 };
 </script>

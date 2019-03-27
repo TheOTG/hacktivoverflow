@@ -9,7 +9,7 @@ import QuestionForm from '@/components/QuestionForm.vue';
 export default {
   name: 'NewQuestion',
   components: {
-    QuestionForm
+    QuestionForm,
   },
   data() {
     return {
