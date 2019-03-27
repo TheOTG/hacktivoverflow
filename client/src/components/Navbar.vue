@@ -73,7 +73,12 @@ export default {
       this.$router.push('/');
     },
     searchQuestion() {
-      this.$router.push(`/search/${this.search}`);
+      this.$router.push({
+        path: '/questions/search',
+        query: {
+          q: this.search,
+        },
+      });
     }
   },
 };

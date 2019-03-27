@@ -1,17 +1,26 @@
 <template>
   <div>
     <div class="container-fluid">
-      <div class="row justify-content-center">
+      <div class="row justify-content-center align-items-center">
         <div class="col-7">
-          <router-link class="float-right my-2" to="/questions/new">
-            <button class="btn btn-primary">Ask Question</button>
-          </router-link>
+          <div class="container-fluid">
+            <div class="row justify-content-center align-items-center border-bottom border-dark">
+              <div class="col">
+                <h3>All Questions</h3>
+              </div>
+              <div class="col-7">
+                <router-link class="float-right my-2" to="/questions/new">
+                  <button class="btn btn-primary">Ask Question</button>
+                </router-link>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <Question v-for="(question, index) in $store.state.questions" 
-              :key="index" 
-              :question="question" />
+                :key="index" 
+                :question="question" />
   </div>
 </template>
 

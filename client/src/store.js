@@ -42,6 +42,9 @@ export default new Vuex.Store({
     SET_MY_ANSWER(state, answers) {
       state.myAnswers = answers;
     },
+    SET_SEARCH_RESULT(state, result) {
+      state.searchResult = result;
+    },
     SET_IS_LOGIN(state, user) {
       state.isLogin = !state.isLogin;
       state.user = state.user ? null : user;
@@ -85,6 +88,9 @@ export default new Vuex.Store({
         .catch(err => {
           console.log(err);
         })
+    },
+    getSearchResult({ commit }, data) {
+      commit('SET_SEARCH_RESULT', data);
     },
     login({ commit }, user) {
       commit('SET_IS_LOGIN', user);

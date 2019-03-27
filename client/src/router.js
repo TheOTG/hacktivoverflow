@@ -13,6 +13,11 @@ export default new Router({
       redirect: '/questions',
     },
     {
+      path: '/search/:id',
+      name: 'search-list',
+      component: () => import(/* webpackChunkName: "questionlist" */ './views/SearchPage.vue'),
+    },
+    {
       path: '/questions',
       name: 'questions',
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue'),
@@ -21,6 +26,11 @@ export default new Router({
           path: '/questions',
           name: 'question-list',
           component: () => import(/* webpackChunkName: "questionlist" */ './views/QuestionList.vue'),
+        },
+        {
+          path: 'search',
+          name: 'search-question',
+          component: () => import(/* webpackChunkName: "searchquestion" */ './views/SearchPage.vue'),
         },
         {
           path: 'new',
@@ -45,16 +55,6 @@ export default new Router({
       ],
     },
     {
-      path: '/register',
-      name: 'register',
-      component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
-    },
-    {
       path: '/myanswers',
       name: 'my-answers',
       component: () => import(/* webpackChunkName: "home" */ './views/Home.vue'),
@@ -70,6 +70,16 @@ export default new Router({
           component: () => import(/* webpackChunkName: "editanswer" */ './views/EditAnswer.vue'),
         },
       ],
+    },
+    {
+      path: '/register',
+      name: 'register',
+      component: () => import(/* webpackChunkName: "register" */ './views/Register.vue'),
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: () => import(/* webpackChunkName: "login" */ './views/Login.vue'),
     },
   ],
 });
