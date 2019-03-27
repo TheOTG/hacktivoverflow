@@ -10,8 +10,8 @@ const cron = require('./helpers/cron');
 
 cron();
 
-mongoose.connect(`mongodb://localhost/${process.env.MONGO_DATABASE}`, { useNewUrlParser: true });
-// mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_DATABASE}?retryWrites=true`, { useNewUrlParser: true })
+// mongoose.connect(`mongodb://localhost/${process.env.MONGO_DATABASE}`, { useNewUrlParser: true });
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_DATABASE}?retryWrites=true`, { useNewUrlParser: true })
 
 app.use(cors());
 app.use(express.json());
