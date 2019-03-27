@@ -5,7 +5,7 @@ const Question = require('../models/question');
 const mailer = require('./mailer');
 
 function cronJob() {
-  cron.schedule('*/5 * * * * *', () => {
+  cron.schedule('* * * * * 0', () => {
     Question
       .find({})
       .populate('user')
@@ -25,15 +25,16 @@ function cronJob() {
         console.log(err);
       });
     queue.process('email', function(job, done) {
-      const text = `Hello ${job.data.name},
+      const text = 
+`Hello ${job.data.name},
       
-      Your question with title ${job.data.title} has received ${job.data.upvotes} and ${job.data.downvotes}.
-      Which gives ${job.data.upvotes - job.data.downvotes} reputation to your question.
-      
-      Thank you for using our platform,
-      
-      Kenny Anthony The`
-      mailer('kennythesman@gmail.com', text);
+Your question with title "${job.data.title}" has received ${job.data.upvotes} and ${job.data.downvotes}.
+Which gives ${job.data.upvotes - job.data.downvotes} reputation to your question.
+
+Thank you for using our platform,
+
+HacktivOverflow`;
+      mailer(job.data.email, text);
       done();
     })
   });
