@@ -66,6 +66,9 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    directSet({ commit }, data) {
+      commit('SET_QUESTION', data);
+    },
     getQuestions({ commit }) {
       axios
         .get('/question')

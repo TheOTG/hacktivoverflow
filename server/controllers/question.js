@@ -133,17 +133,9 @@ class QuestionController {
       });
   }
 
-  static upvote(req, res) {
+  static vote(req, res) {
     Question
-      .findOneAndUpdate({
-        _id: req.params.id,
-      }, {
-        $push: {
-          upvotes: req.user,
-        }
-      }, {
-        new: true,
-      })
+      .findById(req.params.id)
       .populate('answers user')
       .exec((err, docs) => {
         if(err) {
@@ -156,97 +148,33 @@ class QuestionController {
             if(err) {
               res.status(500).json(err);
             } else {
-              res.status(200).json(docs);
-            }
-          });
-        }
-      });
-  }
-
-  static downvote(req, res) {
-    Question
-      .findOneAndUpdate({
-        _id: req.params.id,
-      }, {
-        $push: {
-          downvotes: req.user,
-        }
-      }, {
-        new: true,
-      })
-      .populate('answers user')
-      .exec((err, docs) => {
-        if(err) {
-          res.status(500).json(err);
-        } else {
-          User.populate(docs, {
-            path: 'answers.user',
-            Model: Answer,
-          }, (err, docs) => {
-            if(err) {
-              res.status(500).json(err);
-            } else {
-              res.status(200).json(docs);
-            }
-          });
-        }
-      });
-  }
-
-  static cancelUpvote(req, res) {
-    Question
-      .findOneAndUpdate({
-        _id: req.params.id,
-      }, {
-        $pull: {
-          upvotes: req.user,
-        }
-      }, {
-        new: true,
-      })
-      .populate('answers user')
-      .exec((err, docs) => {
-        if(err) {
-          res.status(500).json(err);
-        } else {
-          User.populate(docs, {
-            path: 'answers.user',
-            Model: Answer,
-          }, (err, docs) => {
-            if(err) {
-              res.status(500).json(err);
-            } else {
-              res.status(200).json(docs);
-            }
-          });
-        }
-      });
-  }
-
-  static cancelDownvote(req, res) {
-    Question
-      .findOneAndUpdate({
-        _id: req.params.id,
-      }, {
-        $pull: {
-          downvotes: req.user,
-        }
-      }, {
-        new: true,
-      })
-      .populate('answers user')
-      .exec((err, docs) => {
-        if(err) {
-          res.status(500).json(err);
-        } else {
-          User.populate(docs, {
-            path: 'answers.user',
-            Model: Answer,
-          }, (err, docs) => {
-            if(err) {
-              res.status(500).json(err);
-            } else {
-              res.status(200).json(docs);
+              if(req.body.vote === 'upvote') {
+                if(docs.downvotes.indexOf(req.user) > -1) {
+                  docs.downvotes.splice(docs.downvotes.indexOf(req.user), 1);
+                }
+                if(docs.upvotes.indexOf(req.user) > -1) {
+                  docs.upvotes.splice(docs.upvotes.indexOf(req.user), 1);
+                } else {
+                  docs.upvotes.push(req.user);
+                }
+              }
+              if(req.body.vote === 'downvote') {
+                if(docs.upvotes.indexOf(req.user) > -1) {
+                  docs.upvotes.splice(docs.upvotes.indexOf(req.user), 1);
+                }
+                if(docs.downvotes.indexOf(req.user) > -1) {
+                  docs.downvotes.splice(docs.downvotes.indexOf(req.user), 1);
+                } else {
+                  docs.downvotes.push(req.user);
+                }
+              }
+              docs.save(err => {
+                if(err) {
+                  res.status(500).json(err);
+                } else {
+                  res.status(200).json(docs);
+                }
+              });
             }
           });
         }

@@ -84,64 +84,31 @@ export default {
   },
   methods: {
     vote(id, type) {
-      let path = null;
-      if(this.hasUpVoted()) {
-        path = 'cancelUpvote';
-      } else if(this.hasDownVoted()) {
-        path = 'cancelDownvote';
-      }
-      if(path) {
+      if(!this.$store.state.isLogin) {
+        this.$router.push('/login');
+      } else {
+        if(type === 'downvote' && this.hasUpVoted() && !this.hasDownVoted()) {
+          this.answer.upvotes.splice(this.answer.upvotes.indexOf(localStorage.userId), 1);
+          this.answer.downvotes.push(localStorage.userId);
+        } else if(type === 'upvote' && this.hasDownVoted() && !this.hasUpVoted()) {
+          this.answer.downvotes.splice(this.answer.downvotes.indexOf(localStorage.userId), 1);
+          this.answer.upvotes.push(localStorage.userId);
+        }
         this.$axios
-          .put(`/answer/${id}/${path}`, {}, {
+          .put(`/answer/${id}/vote`, {
+            vote: type,
+          }, {
             headers: {
               access_token: localStorage.access_token,
             },
           })
           .then(({ data }) => {
-            if(path.search(new RegExp(type, 'i')) === -1) {
-              if(type === 'upvote') {
-                this.upvote(id);
-              } else {
-                this.downvote(id);
-              }
-            } else {
-              this.$emit('refreshQuestion', data);
-            }
+            this.$emit('refreshQuestion', data)
           })
           .catch((err) => {
             console.log(err);
           });
-      } else {
-        this[type](id);
       }
-    },
-    upvote(id) {
-      this.$axios
-        .put(`/answer/${id}/upvote`, {}, {
-          headers: {
-            access_token: localStorage.access_token,
-          },
-        })
-        .then(({ data }) => {
-          this.$emit('refreshQuestion', data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-    downvote(id) {
-      this.$axios
-        .put(`/answer/${id}/downvote`, {}, {
-          headers: {
-            access_token: localStorage.access_token,
-          },
-        })
-        .then(({ data }) => {
-          this.$emit('refreshQuestion', data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
     },
     hasUpVoted() {
       if(this.answer.upvotes.indexOf(localStorage.userId) > -1) {

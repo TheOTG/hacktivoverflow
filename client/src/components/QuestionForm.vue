@@ -120,7 +120,14 @@ export default {
               'Your question will be answered by other users soon.',
               'success');
           }
-          this.$store.dispatch('getQuestions');
+          let questions = this.$store.state.questions;
+            for(let i = 0; i < questions.length; i++) {
+              if(questions[i]._id.toString() === data._id.toString()) {
+                questions[i] = data;
+                this.$store.dispatch('directSet', questions);
+                break;
+              }
+            }
           if(this.isEdit) {
             this.$router.push(`/questions/${data._id}`);
           } else {

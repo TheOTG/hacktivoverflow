@@ -1,7 +1,12 @@
 <template>
   <form @submit.prevent="isEdit ? editAnswer() : newAnswer()" 
         class="mb-5">
-    <div style="font-size: 24px;">Your Answer</div>
+    <div style="font-size: 24px;" v-if="!isEdit">Your Answer</div>
+    <div style="font-size: 24px;" v-if="isEdit">Edit Answer</div>
+    <div v-if="isEdit">
+      Question: 
+      <router-link :to="`/questions/${answer.question._id}`">{{ answer.question.title }}</router-link>
+    </div>
     <div class="form-group">
       <pre v-if="errorMsg" style="color: red; text-align: center;">{{ errorMsg }}</pre>
       <label>Title</label>
@@ -115,20 +120,26 @@ export default {
         this.isLoading = true;
         this.$axios
           .put(`/answer/${this.$route.params.id}`, {
-            title: this.title,
-            description: this.description,
+            title: this.answer.title,
+            description: this.answer.description,
           }, {
             headers: {
               access_token: localStorage.access_token,
             },
           })
           .then(({ data }) => {
+            let questions = this.$store.state.questions;
             this.$swal('Answer successfully edited!',
                        'Your answer should be more informative now.',
                        'success');
-            this.answer.title = '';
-            this.answer.description = '';
-            this.$router.go(-1);
+            for(let i = 0; i < questions.length; i++) {
+              if(questions[i]._id.toString() === data.question._id.toString()) {
+                questions[i] = data.question;
+                this.$store.dispatch('directSet', questions);
+                break;
+              }
+            }
+            this.$router.push(`/questions/${data.question._id}`);
           })
           .catch((err) => {
             console.log(err);
