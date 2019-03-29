@@ -123,7 +123,7 @@ export default {
       moment,
     };
   },
-  mounted() {
+  beforeMount() {
     this.question = this.$store.getters.getQuestionById(this.$route.params.id)[0];
     if(!this.question) {
       this.question = {};
@@ -137,11 +137,20 @@ export default {
       if(!this.$store.state.isLogin) {
         this.$router.push('/login');
       } else {
-        if(type === 'upvote' && this.hasUpVoted()) {
+        if(type === 'downvote' && this.hasUpVoted() && !this.hasDownVoted()) {
           this.question.upvotes.splice(this.question.upvotes.indexOf(localStorage.userId), 1);
-        }
-        if(type === 'downvote' && this.hasDownVoted()) {
+          this.question.downvotes.push(localStorage.userId);
+        } else if(type === 'upvote' && this.hasDownVoted() && !this.hasUpVoted()) {
           this.question.downvotes.splice(this.question.downvotes.indexOf(localStorage.userId), 1);
+          this.question.upvotes.push(localStorage.userId);
+        } else if(type === 'downvote' && this.hasDownVoted()) {
+          this.question.downvotes.splice(this.question.downvotes.indexOf(localStorage.userId), 1);
+        } else if(type === 'upvote' && this.hasUpVoted()) {
+          this.question.upvotes.splice(this.question.upvotes.indexOf(localStorage.userId), 1);
+        } else if(type === 'upvote') {
+          this.question.upvotes.push(localStorage.userId);
+        } else if(type === 'downvote') {
+          this.question.downvotes.push(localStorage.userId);
         }
         this.$axios
           .put(`/question/${id}/vote`, {

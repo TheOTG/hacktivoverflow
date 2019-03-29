@@ -13,6 +13,8 @@ router.post('/', Answer.post);
 
 router.get('/mylist', Answer.myList);
 
+router.get('/:id', Answer.getOne);
+
 router.put('/:id', authorize, Answer.edit);
 
 router.put('/:id/vote', Answer.vote);

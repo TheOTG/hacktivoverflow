@@ -26,6 +26,28 @@ class QuestionController {
       });
   }
 
+  static getOne(req, res) {
+    Question
+      .findById(req.params.id)
+      .populate('answers user')
+      .exec((err, docs) => {
+        if(err) {
+          res.status(500).json(err);
+        } else {
+          User.populate(docs, {
+            path: 'answers.user',
+            Model: Answer,
+          }, (err, docs) => {
+            if(err) {
+              res.status(500).json(err);
+            } else {
+              res.status(200).json(docs);
+            }
+          });
+        }
+      });
+  }
+
   static post(req, res) {
     req.body.user = req.user;
     Question

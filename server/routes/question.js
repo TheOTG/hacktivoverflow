@@ -6,11 +6,13 @@ const authorize = require('../middlewares/authorizeQuestion');
 
 router.get('/', Question.list);
 
+router.post('/', authenticate, Question.post);
+
+router.get('/mylist', authenticate, Question.myList);
+
+router.get('/:id', Question.getOne);
+
 router.use(authenticate);
-
-router.post('/', Question.post);
-
-router.get('/mylist', Question.myList);
 
 router.put('/:id', authorize, Question.edit);
 

@@ -93,6 +93,14 @@ export default {
         } else if(type === 'upvote' && this.hasDownVoted() && !this.hasUpVoted()) {
           this.answer.downvotes.splice(this.answer.downvotes.indexOf(localStorage.userId), 1);
           this.answer.upvotes.push(localStorage.userId);
+        } else if(type === 'downvote' && this.hasDownVoted()) {
+          this.answer.downvotes.splice(this.answer.downvotes.indexOf(localStorage.userId), 1);
+        } else if(type === 'upvote' && this.hasUpVoted()) {
+          this.answer.upvotes.splice(this.answer.upvotes.indexOf(localStorage.userId), 1);
+        } else if(type === 'upvote') {
+          this.answer.upvotes.push(localStorage.userId);
+        } else if(type === 'downvote') {
+          this.answer.downvotes.push(localStorage.userId);
         }
         this.$axios
           .put(`/answer/${id}/vote`, {

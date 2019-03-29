@@ -10,8 +10,8 @@ Vue.use(CKEditor);
 
 Vue.use(VueSwal);
 
-// axios.defaults.baseURL = 'http://hacktivflow-server.kennyanthonythe.xyz/';
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = 'http://hacktivflow-server.kennyanthonythe.xyz/';
+// axios.defaults.baseURL = 'http://localhost:3000';
 
 Vue.prototype.$axios = axios;
 

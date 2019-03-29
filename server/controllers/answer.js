@@ -15,6 +15,18 @@ class AnswerController {
       });
   }
 
+  static getOne(req, res) {
+    Answer
+      .findById(req.params.id)
+      .populate('user question')
+      .then(answer => {
+        res.status(200).json(answer);
+      })
+      .catch(err => {
+        res.status(500).json(err);
+      })
+  }
+
   static post(req, res) {
     req.body.user = req.user;
     Answer

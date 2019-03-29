@@ -3,7 +3,7 @@
         class="mb-5">
     <div style="font-size: 24px;" v-if="!isEdit">Your Answer</div>
     <div style="font-size: 24px;" v-if="isEdit">Edit Answer</div>
-    <div v-if="isEdit">
+    <div v-if="isEdit && answer.question">
       Question: 
       <router-link :to="`/questions/${answer.question._id}`">{{ answer.question.title }}</router-link>
     </div>
@@ -63,9 +63,21 @@ export default {
       errorMsg: null,
     };
   },
-  beforeMount() {
+  created() {
     if(this.$route.params.id && this.isEdit) {
-      this.answer = this.$store.getters.getAnswerById(this.$route.params.id)[0];
+      this.$axios
+        .get(`/answer/${this.$route.params.id}`, {
+          headers: {
+            access_token: localStorage.access_token,
+          }
+        })
+        .then(({ data }) => {
+          this.answer = data;
+        })
+        .catch(err => {
+          this.$router.push('/questions')
+          console.log(err);
+        });
     }
   },
   methods: {
